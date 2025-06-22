@@ -17,6 +17,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <unistd.h>
+# include <limits.h>
 
 typedef enum e_state
 {
@@ -38,6 +40,9 @@ typedef struct s_one_philo
 {
 	t_state			state;
 	time_t			l_meal;
+	int				meals_had;
+	int				index;
+	t_base			*life;
 	pthread_mutex_t *left_f;
 	pthread_mutex_t *right_f;
 }				t_guy;
