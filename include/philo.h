@@ -25,11 +25,13 @@ typedef enum e_state
 	EAT,
 	SLEEP,
 	THINK,
+	FORK,
 	DEAD
 }			t_state;
 
 typedef struct s_life_data
 {
+	int	die;
 	int	num;
 	int	eat;
 	int	sleep;
@@ -39,7 +41,11 @@ typedef struct s_life_data
 typedef struct s_one_philo
 {
 	t_state			state;
-	time_t			l_meal;
+	time_t			start;
+	time_t			eat_t;
+	time_t			sleep_t;
+	time_t			think_t;
+	time_t			die_t;
 	int				meals_had;
 	int				index;
 	t_base			*life;
@@ -60,7 +66,8 @@ typedef struct s_philo_data
 
 
 
-int	ft_atoi(const char *nptr);
+int		ft_atoi(const char *nptr);
+time_t	c_time(void);
 
 
 #endif

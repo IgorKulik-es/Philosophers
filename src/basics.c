@@ -36,7 +36,7 @@ int	ft_atoi(const char *nptr)
 	return (result);
 }
 
-time_t	timer(void)
+time_t	c_time(void)
 {
 	struct timeval	time_current;
 

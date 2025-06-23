@@ -14,15 +14,16 @@
 
 int	read_values(t_philo_d *data,int argc, char **argv)
 {
-	if (argc != 4 || argc != 5)
+	if (argc != 5 || argc != 6)
 		return (1);
 	data->life.num = ft_atoi(argv[1]);
 	data->num_phil = data->life.num;
-	data->life.eat = ft_atoi(argv[2]);
-	data->life.sleep = ft_atoi(argv[3]);
+	data->life.die = ft_atoi(argv[2]);
+	data->life.eat = ft_atoi(argv[3]);
+	data->life.sleep = ft_atoi(argv[4]);
 	data->life.food = INT_MAX;
-	if (argc == 5)
-		data->life.food = ft_atoi(argv[4]);
+	if (argc == 6)
+		data->life.food = ft_atoi(argv[5]);
 }
 
 int	initialize_threads(t_philo_d *data)
@@ -38,7 +39,9 @@ int	initialize_threads(t_philo_d *data)
 	data->start = ft_timer();
 	while (index < data->num_phil)
 	{
-		(data->philos[index]).l_meal = data->start;
+		(data->philos[index]).start = data->start;
+		(data->philos[index]).eat_t = data->start;
+		(data->philos[index]).die_t = data->start + data->life.die;
 		(data->philos[index]).left_f = data->forks[index];
 		if (index < data->num_phil - 1)
 			(data->philos[index]).right_f = data->forks[index + 1];
