@@ -6,16 +6,18 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/22 10:13:22 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/24 20:17:14 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
+void	try_to_eat(t_guy *philo);
+
 void	*life_cycle(t_guy *philo)
 {
 	while (philo->state != DEAD)
-	{		
+	{
 		if (c_time() > philo->die_t)
 			message(DEAD, philo);
 		if (philo->state == THINK)
@@ -57,7 +59,7 @@ void	try_to_eat(t_guy *philo)
 void	message(t_state new_state, t_guy *philo)
 {
 	time_t	curr_time;
-	
+
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
 		printf("%ld %d has taken a fork\n", curr_time, philo->index + 1);

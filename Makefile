@@ -1,8 +1,8 @@
 NAME = philo
 BONUSNAME = philo_bonus
 
-SRC = philo_main.c
-BONUSSRC = 
+SRC = philo_main.c threader.c cleaner.c initializer.c basics.c
+BONUSSRC =
 
 SRCSDIR = src
 OBJDIR = obj

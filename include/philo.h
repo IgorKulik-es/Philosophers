@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/21 11:34:19 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/24 20:16:57 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ typedef struct s_one_philo
 	int				meals_had;
 	int				index;
 	t_base			*life;
-	pthread_mutex_t *left_f;
-	pthread_mutex_t *right_f;
+	pthread_mutex_t	*left_f;
+	pthread_mutex_t	*right_f;
 }				t_guy;
 
 
@@ -68,6 +68,9 @@ typedef struct s_philo_data
 
 int		ft_atoi(const char *nptr);
 time_t	c_time(void);
-
+int		read_values(t_philo_d *data, int argc, char **argv);
+int		initialize_metadata(t_philo_d *data);
+int		clean_all(t_philo_d *data, int error_code);
+void	message(t_state new_state, t_guy *philo);
 
 #endif

@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_main.c                                       :+:      :+:    :+:   */
+/*   cleaner.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/21 11:29:21 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/24 20:15:08 by ikulik           ###   ########.fr       */
+/*   Created: 2025/06/24 18:45:19 by ikulik            #+#    #+#             */
+/*   Updated: 2025/06/24 20:07:25 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-int	main(int argc, char **argv)
+int	clean_all(t_philo_d *data, int error_code)
 {
-	t_philo_d	data;
-
-	read_values(&data, argc, argv);
-	initialize_metadata(&data);
-	printf("Num philos:%d, start time:%ld, time to die:%d\n", data.num_phil, data.start, data.life.die);
-	clean_all(&data, 0);
-	return (0);
+	if (data->threads != NULL)
+		free(data->threads);
+	if (data->forks != NULL)
+		free(data->forks);
+	if (data->philos != NULL)
+		free(data->philos);
+	return (error_code);
 }
