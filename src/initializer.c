@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 14:27:13 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 15:22:38 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,13 @@ void	initialize_philo(t_philo_d *data, int ind)
 	(data->philos[ind]).eat_t = data->start;
 	(data->philos[ind]).die_t = data->start + data->life.die;
 	(data->philos[ind]).sleep_t = data->start + data->life.eat;
-	(data->philos[ind]).think_t = (data->philos[ind]).sleep_t
-		+ data->life.sleep;
+	(data->philos[ind]).think_t = data->start;
 	(data->philos[ind]).left_f = &(data->forks[ind]);
 	if (ind < data->num_phil - 1)
 		(data->philos[ind]).right_f = &(data->forks[ind + 1]);
-	(data->philos[ind]).state = THINK;
-	if ((ind % 2) == 1/* && !(((ind % 2) == 1) && ind == data->num_phil - 1)*/)
-		(data->philos[ind]).state = SLEEP;
+	(data->philos[ind]).state = SLEEP;
+/* 	if ((ind % 2) == 1 && !(((ind % 2) == 1) && ind == data->num_phil - 1))
+		(data->philos[ind]).state = SLEEP; */
 	(data->philos[ind]).meals_had = 0;
 	(data->philos[ind]).index = ind;
 	(data->philos[ind]).life = &(data->life);

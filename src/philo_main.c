@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:29:21 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 14:28:49 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 15:17:04 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	main(int argc, char **argv)
 	monitor(&data);
 	pthread_join(data.threads[0], NULL);
 	pthread_join(data.threads[1], NULL);
+	pthread_mutex_destroy(&(data.forks[0]));
+	pthread_mutex_destroy(&(data.forks[1]));
 	clean_all(&data, 0);
 	return (0);
 }

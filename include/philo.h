@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/24 20:16:57 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 16:05:24 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <limits.h>
 # define MILLISEC 1000
+# define REF_RATE 100
 
 typedef enum e_state
 {

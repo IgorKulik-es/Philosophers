@@ -6,13 +6,14 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 14:52:42 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 16:46:35 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-void	try_to_eat(t_guy *philo);
+static void	try_to_eat(t_guy *philo);
+static int	kill_philo(t_philo_d *data, int index_dead);
 
 void	*life_cycle(void *input)
 {
@@ -21,42 +22,44 @@ void	*life_cycle(void *input)
 	philo = (t_guy *)input;
 	while (philo->state != DEAD)
 	{
-		if (c_time() > philo->die_t)
-			message(DEAD, philo);
-		if (philo->state == THINK)
+		if (philo->state == THINK || philo->state == SLEEP)
 			try_to_eat(philo);
-		if (philo->state == EAT && c_time() > philo->sleep_t)
+		if (philo->state == EAT)
 		{
 			message(SLEEP, philo);
-			pthread_mutex_unlock(philo->right_f);
-			pthread_mutex_unlock(philo->left_f);
+			usleep(philo->life->sleep * MILLISEC);
 		}
-		if (philo->state == SLEEP && c_time() > philo->think_t)
-			message(THINK, philo);
-		usleep(1000);
 	}
 	return (NULL);
 }
 
-void	try_to_eat(t_guy *philo)
+static void	try_to_eat(t_guy *philo)
 {
 	if (philo->index % 2 == 0)
 	{
 		pthread_mutex_lock(philo->left_f);
-		message(FORK, philo);
+		if (philo->state != DEAD)
+			message(FORK, philo);
 	}
 	pthread_mutex_lock(philo->right_f);
-	message(FORK, philo);
+	if (philo->state != DEAD)
+		message(FORK, philo);
 	if (philo->index % 2 == 1)
 	{
 		pthread_mutex_lock(philo->left_f);
-		message(FORK, philo);
+		if (philo->state != DEAD)
+			message(FORK, philo);
 	}
-	message(EAT, philo);
+	if (philo->state != DEAD)
+		message(EAT, philo);
 	philo->eat_t = c_time();
 	philo->die_t = philo->eat_t + philo->life->die;
 	philo->sleep_t = philo->eat_t + philo->life->eat;
 	philo->think_t = philo->sleep_t + philo->life->sleep;
+	if (philo->state == EAT)
+		usleep(philo->life->eat * MILLISEC);
+	pthread_mutex_unlock(philo->right_f);
+	pthread_mutex_unlock(philo->left_f);
 }
 
 void	message(t_state new_state, t_guy *philo)
@@ -80,28 +83,35 @@ void	message(t_state new_state, t_guy *philo)
 
 int	monitor(t_philo_d *data)
 {
-	int		index_base;
-	int		index_kill;
+	int		index;
 	time_t	time_c;
 
-	index_kill = -1;
 	while (data->all_alive == 1)
 	{
-		index_base = -1;
-		while (++index_base < data->num_phil)
+		usleep(REF_RATE);
+		index = -1;
+		while (++index < data->num_phil)
 		{
 			time_c = c_time();
-			if (time_c > (data->philos[index_base]).die_t)
-			{
-				message(DEAD, &(data->philos[index_base]));
-				data->all_alive = 0;
-				while (++index_kill < data->num_phil)
-					(data->philos[index_kill]).state = DEAD;
-				return (0);
-			}
+			if (time_c >= (data->philos[index]).die_t)
+				return (kill_philo(data, index));
+			if (time_c >= (data->philos[index]).think_t
+				&& (data->philos[index]).state == SLEEP)
+				message(THINK, &(data->philos[index]));
 		}
-		usleep(MILLISEC);
 	}
 	return (1);
+}
+
+static int	kill_philo(t_philo_d *data, int index_dead)
+{
+	int	index_others;
+
+	index_others = -1;
+	message(DEAD, &(data->philos[index_dead]));
+	data->all_alive = 0;
+	while (++index_others < data->num_phil)
+		(data->philos[index_others]).state = DEAD;
+	return (0);
 }
 
