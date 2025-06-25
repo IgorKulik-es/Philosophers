@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/24 20:19:01 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 14:27:13 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 	data->life.die = ft_atoi(argv[2]);
 	data->life.eat = ft_atoi(argv[3]);
 	data->life.sleep = ft_atoi(argv[4]);
-	data->life.food = INT_MAX;
+	data->life.food = -1;
 	if (argc == 6)
 		data->life.food = ft_atoi(argv[5]);
+	if (data->num_phil < 1 || data->life.die < 1
+		|| (data->life.food < 1 && argc == 6))
+		return (1);
 	return (0);
 }
 

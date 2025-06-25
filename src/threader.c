@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/24 20:17:14 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/25 14:52:42 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	try_to_eat(t_guy *philo);
 void	*life_cycle(void *input)
 {
 	t_guy	*philo;
-	
+
 	philo = (t_guy *)input;
 	while (philo->state != DEAD)
 	{
@@ -96,10 +96,7 @@ int	monitor(t_philo_d *data)
 				message(DEAD, &(data->philos[index_base]));
 				data->all_alive = 0;
 				while (++index_kill < data->num_phil)
-				{
 					(data->philos[index_kill]).state = DEAD;
-					pthread_mutex_destroy(&(data->forks[index_kill]));
-				}
 				return (0);
 			}
 		}

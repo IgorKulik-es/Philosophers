@@ -13,7 +13,7 @@ BONUSSRCS = $(addprefix $(OBJDIR)/, $(BONUSSRC))
 OBJS = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
 BONUSOBJS = $(addprefix $(OBJDIR)/,  $(notdir $(BONUSSRCS:.c=.o)))
 
-CFLAGS = -Wall -Wextra -Werror -g -lpthread
+CFLAGS = -Wall -Wextra -Werror -g
 MFLAGS = -lpthread
 
 RM = rm -f
