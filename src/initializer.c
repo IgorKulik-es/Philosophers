@@ -63,7 +63,7 @@ void	initialize_philo(t_philo_d *data, int ind)
 	if (ind < data->num_phil - 1)
 		(data->philos[ind]).right_f = &(data->forks[ind + 1]);
 	(data->philos[ind]).state = THINK;
-	if ((ind % 2) == 1 && !(((ind % 2) == 1) && ind == data->num_phil - 1))
+	if ((ind % 2) == 1/* && !(((ind % 2) == 1) && ind == data->num_phil - 1)*/)
 		(data->philos[ind]).state = SLEEP;
 	(data->philos[ind]).meals_had = 0;
 	(data->philos[ind]).index = ind;
