@@ -34,6 +34,10 @@ int	initialize_metadata(t_philo_d *data)
 	int	index;
 
 	index = -1;
+	data->all_alive = 1;
+	data->threads = NULL;
+	data->philos = NULL;
+	data->forks = NULL;
 	data->threads = (pthread_t *)malloc(data->num_phil * sizeof(pthread_t));
 	data->forks = (pthread_mutex_t *)malloc(data->num_phil
 			* sizeof(pthread_mutex_t));

@@ -14,8 +14,11 @@
 
 void	try_to_eat(t_guy *philo);
 
-void	*life_cycle(t_guy *philo)
+void	*life_cycle(void *input)
 {
+	t_guy	*philo;
+	
+	philo = (t_guy *)input;
 	while (philo->state != DEAD)
 	{
 		if (c_time() > philo->die_t)
@@ -73,5 +76,29 @@ void	message(t_state new_state, t_guy *philo)
 		printf("%ld %d is dead\n", curr_time, philo->index + 1);
 	if (new_state != FORK)
 		philo->state = new_state;
+}
+
+int	monitor(t_philo_d *data)
+{
+	int		index;
+	time_t	time_c;
+
+	while (data->all_alive == 1)
+	{
+		index = 0;
+		while (index < data->num_phil)
+		{
+			time_c = c_time();
+			if (time_c > (data->philos[index]).die_t)
+			{
+				message(DEAD, &(data->philos[index]));
+				data->all_alive = 0;
+				return (clean_all(data, 0));
+			}
+			index++;
+		}
+		usleep(MILLISEC);
+	}
+	return (1);
 }
 

@@ -13,7 +13,8 @@ BONUSSRCS = $(addprefix $(OBJDIR)/, $(BONUSSRC))
 OBJS = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
 BONUSOBJS = $(addprefix $(OBJDIR)/,  $(notdir $(BONUSSRCS:.c=.o)))
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -lpthread
+MFLAGS = -lpthread
 
 RM = rm -f
 
@@ -21,7 +22,7 @@ all: $(NAME)
 bonus: $(BONUSNAME)
 
 $(NAME): $(LIBRARY) $(OBJS)
-	cc $(OBJS) $(LIBRARY) $(MFLAGS) -o $(NAME)
+	cc $(OBJS) $(LIBRARY) -o $(NAME) $(MFLAGS)
 
 $(BONUSNAME): $(BONUSOBJS) $(LIBRARY)
 	cc $(BONUSOBJS) $(LIBRARY) $(MFLAGS) -o $(BONUSNAME)

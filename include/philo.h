@@ -19,6 +19,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 # include <limits.h>
+# define MILLISEC 1000
 
 typedef enum e_state
 {
@@ -57,6 +58,7 @@ typedef struct s_one_philo
 typedef struct s_philo_data
 {
 	int				num_phil;
+	int				all_alive;
 	pthread_t		*threads;
 	pthread_mutex_t	*forks;
 	t_guy			*philos;
@@ -71,6 +73,8 @@ time_t	c_time(void);
 int		read_values(t_philo_d *data, int argc, char **argv);
 int		initialize_metadata(t_philo_d *data);
 int		clean_all(t_philo_d *data, int error_code);
+void	*life_cycle(void *input);
 void	message(t_state new_state, t_guy *philo);
+int		monitor(t_philo_d *data);
 
 #endif
