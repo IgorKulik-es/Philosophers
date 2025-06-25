@@ -80,22 +80,28 @@ void	message(t_state new_state, t_guy *philo)
 
 int	monitor(t_philo_d *data)
 {
-	int		index;
+	int		index_base;
+	int		index_kill;
 	time_t	time_c;
 
+	index_kill = -1;
 	while (data->all_alive == 1)
 	{
-		index = 0;
-		while (index < data->num_phil)
+		index_base = -1;
+		while (++index_base < data->num_phil)
 		{
 			time_c = c_time();
-			if (time_c > (data->philos[index]).die_t)
+			if (time_c > (data->philos[index_base]).die_t)
 			{
-				message(DEAD, &(data->philos[index]));
+				message(DEAD, &(data->philos[index_base]));
 				data->all_alive = 0;
-				return (clean_all(data, 0));
+				while (++index_kill < data->num_phil)
+				{
+					(data->philos[index_kill]).state = DEAD;
+					pthread_mutex_destroy(&(data->forks[index_kill]));
+				}
+				return (0);
 			}
-			index++;
 		}
 		usleep(MILLISEC);
 	}

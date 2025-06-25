@@ -56,12 +56,14 @@ void	initialize_philo(t_philo_d *data, int ind)
 	(data->philos[ind]).start = data->start;
 	(data->philos[ind]).eat_t = data->start;
 	(data->philos[ind]).die_t = data->start + data->life.die;
-	(data->philos[ind]).sleep_t = data->start + data->life.sleep;
+	(data->philos[ind]).sleep_t = data->start + data->life.eat;
+	(data->philos[ind]).think_t = (data->philos[ind]).sleep_t
+		+ data->life.sleep;
 	(data->philos[ind]).left_f = &(data->forks[ind]);
 	if (ind < data->num_phil - 1)
 		(data->philos[ind]).right_f = &(data->forks[ind + 1]);
 	(data->philos[ind]).state = THINK;
-	if ((ind % 2) == 1 && !(((ind % 2) == 1) && ind == data->num_phil))
+	if ((ind % 2) == 1 && !(((ind % 2) == 1) && ind == data->num_phil - 1))
 		(data->philos[ind]).state = SLEEP;
 	(data->philos[ind]).meals_had = 0;
 	(data->philos[ind]).index = ind;

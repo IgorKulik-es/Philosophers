@@ -18,7 +18,7 @@ int	clean_all(t_philo_d *data, int error_code)
 
 	index = -1;
 	while (++index < data->num_phil)
-		pthread_mutex_destroy(&(data->forks[index]));	
+		pthread_mutex_destroy(&(data->forks[index]));
 	if (data->threads != NULL)
 		free(data->threads);
 	if (data->forks != NULL)
