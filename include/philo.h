@@ -19,6 +19,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 # include <limits.h>
+# include <stdbool.h>
 # define MILLISEC 1000
 # define REF_RATE 100
 
@@ -44,15 +45,16 @@ typedef struct s_one_philo
 {
 	t_state			state;
 	time_t			start;
-	time_t			eat_t;
-	time_t			sleep_t;
 	time_t			think_t;
 	time_t			die_t;
 	int				meals_had;
 	int				index;
 	t_base			*life;
-	pthread_mutex_t	*left_f;
-	pthread_mutex_t	*right_f;
+	pthread_mutex_t	*left_m;
+	pthread_mutex_t	*right_m;
+	pthread_mutex_t	*state_m;
+	bool			*fork_l;
+	bool			*fork_r;
 }				t_guy;
 
 
@@ -60,8 +62,10 @@ typedef struct s_philo_data
 {
 	int				num_phil;
 	int				all_alive;
+	bool			*forks;
 	pthread_t		*threads;
-	pthread_mutex_t	*forks;
+	pthread_mutex_t	*mutex_fork;
+	pthread_mutex_t	*mutex_state;
 	t_guy			*philos;
 	t_base			life;
 	time_t			start;
@@ -77,5 +81,6 @@ int		clean_all(t_philo_d *data, int error_code);
 void	*life_cycle(void *input);
 void	message(t_state new_state, t_guy *philo);
 int		monitor(t_philo_d *data);
-
+void	initialize_threads(t_philo_d *data);
+void	join_destroy(t_philo_d *data);
 #endif

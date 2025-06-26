@@ -41,33 +41,60 @@ int	initialize_metadata(t_philo_d *data)
 	data->threads = NULL;
 	data->philos = NULL;
 	data->forks = NULL;
+	data->mutex_fork = NULL;
+	data->mutex_state = NULL;
 	data->threads = (pthread_t *)malloc(data->num_phil * sizeof(pthread_t));
-	data->forks = (pthread_mutex_t *)malloc(data->num_phil
+	data->mutex_fork = (pthread_mutex_t *)malloc(data->num_phil
 			* sizeof(pthread_mutex_t));
 	data->philos = (t_guy *)malloc(data->num_phil * sizeof(t_guy));
-	if (data->forks == NULL || data->philos == NULL || data->philos == NULL)
+	data->forks = (bool *)malloc(data->num_phil * sizeof(bool));
+	data->mutex_state = malloc(data->num_phil * sizeof(pthread_mutex_t));
+	if (data->forks == NULL || data->philos == NULL || data->philos == NULL
+			|| data->forks == NULL || data->mutex_state == NULL)
 		return (clean_all(data, EXIT_FAILURE));
 	data->start = c_time();
 	while (++index < data->num_phil)
 		initialize_philo(data, index);
-	(data->philos[data->num_phil - 1]).right_f = &(data->forks[0]);
+	(data->philos[data->num_phil - 1]).right_m = &(data->mutex_fork[0]);
+	(data->philos[data->num_phil - 1]).fork_r = &(data->forks[0]);
 	return (0);
 }
 
 void	initialize_philo(t_philo_d *data, int ind)
 {
+	data->forks[ind] = true;
+	(data->philos[ind]).state_m = &(data->mutex_state[ind]);
 	(data->philos[ind]).start = data->start;
-	(data->philos[ind]).eat_t = data->start;
 	(data->philos[ind]).die_t = data->start + data->life.die;
-	(data->philos[ind]).sleep_t = data->start + data->life.eat;
 	(data->philos[ind]).think_t = data->start;
-	(data->philos[ind]).left_f = &(data->forks[ind]);
+	(data->philos[ind]).left_m = &(data->mutex_fork[ind]);
+	(data->philos[ind]).fork_l = &(data->forks[ind]);
 	if (ind < data->num_phil - 1)
-		(data->philos[ind]).right_f = &(data->forks[ind + 1]);
+		(data->philos[ind]).right_m = &(data->mutex_fork[ind + 1]);
+	if (ind < data->num_phil - 1)
+		(data->philos[ind]).fork_r = &(data->forks[ind + 1]);
 	(data->philos[ind]).state = SLEEP;
-/* 	if ((ind % 2) == 1 && !(((ind % 2) == 1) && ind == data->num_phil - 1))
-		(data->philos[ind]).state = SLEEP; */
 	(data->philos[ind]).meals_had = 0;
 	(data->philos[ind]).index = ind;
 	(data->philos[ind]).life = &(data->life);
+}
+
+void	initialize_threads(t_philo_d *data)
+{
+	int	index;
+
+	index = 0;
+	while (index < data->num_phil)
+	{
+		pthread_mutex_init(&(data->mutex_fork[index]), NULL);
+		pthread_mutex_init(&(data->mutex_state[index]), NULL);
+		index++;
+	}
+	index = 0;
+	while (index < data->num_phil)
+	{
+		pthread_create(&(data->threads[index]), NULL, life_cycle,
+			(void *)&(data->philos[index]));
+		index++;
+	}
 }

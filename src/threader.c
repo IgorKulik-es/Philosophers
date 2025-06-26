@@ -37,35 +37,37 @@ static void	try_to_eat(t_guy *philo)
 {
 	if (philo->index % 2 == 0)
 	{
-		pthread_mutex_lock(philo->left_f);
-		if (philo->state != DEAD)
-			message(FORK, philo);
-	}
-	pthread_mutex_lock(philo->right_f);
-	if (philo->state != DEAD)
+		pthread_mutex_lock(philo->left_m);
+		*(philo->fork_l) = false;
 		message(FORK, philo);
+	}
+	pthread_mutex_lock(philo->right_m);
+	*(philo->fork_r) = false;
+	message(FORK, philo);
 	if (philo->index % 2 == 1)
 	{
-		pthread_mutex_lock(philo->left_f);
-		if (philo->state != DEAD)
-			message(FORK, philo);
+		pthread_mutex_lock(philo->left_m);
+		*(philo->fork_l) = false;
+		message(FORK, philo);
 	}
-	if (philo->state != DEAD)
-		message(EAT, philo);
-	philo->eat_t = c_time();
-	philo->die_t = philo->eat_t + philo->life->die;
-	philo->sleep_t = philo->eat_t + philo->life->eat;
-	philo->think_t = philo->sleep_t + philo->life->sleep;
+	message(EAT, philo);
+	philo->die_t = c_time() + philo->life->die;
+	philo->think_t = c_time() + philo->life->eat + philo->life->sleep;
 	if (philo->state == EAT)
 		usleep(philo->life->eat * MILLISEC);
-	pthread_mutex_unlock(philo->right_f);
-	pthread_mutex_unlock(philo->left_f);
+	*(philo->fork_l) = true;
+	*(philo->fork_r) = true;
+	pthread_mutex_unlock(philo->right_m);
+	pthread_mutex_unlock(philo->left_m);
 }
 
 void	message(t_state new_state, t_guy *philo)
 {
 	time_t	curr_time;
 
+	pthread_mutex_lock(philo->state_m);
+	if (philo->state == DEAD)
+		return ;
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
 		printf("%ld %d has taken a fork\n", curr_time, philo->index + 1);
@@ -79,6 +81,7 @@ void	message(t_state new_state, t_guy *philo)
 		printf("%ld %d is dead\n", curr_time, philo->index + 1);
 	if (new_state != FORK)
 		philo->state = new_state;
+	pthread_mutex_unlock(philo->state_m);
 }
 
 int	monitor(t_philo_d *data)
@@ -111,7 +114,11 @@ static int	kill_philo(t_philo_d *data, int index_dead)
 	message(DEAD, &(data->philos[index_dead]));
 	data->all_alive = 0;
 	while (++index_others < data->num_phil)
+	{
+		pthread_mutex_lock(&(data->mutex_state[index_others]));
 		(data->philos[index_others]).state = DEAD;
+		pthread_mutex_unlock(&(data->mutex_state[index_others]));
+	}
 	return (0);
 }
 
