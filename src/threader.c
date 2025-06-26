@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/26 16:23:16 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/26 20:01:17 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	try_to_eat(t_guy *philo);
 static int	kill_philo(t_philo_d *data, int index_dead);
+static void	grab_forks(t_guy *philo);
 
 void	*life_cycle(void *input)
 {
@@ -35,21 +36,7 @@ void	*life_cycle(void *input)
 
 static void	try_to_eat(t_guy *philo)
 {
-	if (philo->index % 2 == 0)
-	{
-		pthread_mutex_lock(philo->left_m);
-		*(philo->fork_l) = false;
-		message(FORK, philo);
-	}
-	pthread_mutex_lock(philo->right_m);
-	*(philo->fork_r) = false;
-	message(FORK, philo);
-	if (philo->index % 2 == 1)
-	{
-		pthread_mutex_lock(philo->left_m);
-		*(philo->fork_l) = false;
-		message(FORK, philo);
-	}
+	grab_forks(philo);
 	message(EAT, philo);
 	philo->die_t = c_time() + philo->life->die;
 	philo->think_t = c_time() + philo->life->eat + philo->life->sleep;
@@ -107,6 +94,25 @@ int	monitor(t_philo_d *data)
 		}
 	}
 	return (1);
+}
+
+static void	grab_forks(t_guy *philo)
+{
+	if (philo->index % 2 == 0)
+	{
+		pthread_mutex_lock(philo->left_m);
+		*(philo->fork_l) = false;
+		message(FORK, philo);
+	}
+	pthread_mutex_lock(philo->right_m);
+	*(philo->fork_r) = false;
+	message(FORK, philo);
+	if (philo->index % 2 == 1)
+	{
+		pthread_mutex_lock(philo->left_m);
+		*(philo->fork_l) = false;
+		message(FORK, philo);
+	}
 }
 
 static int	kill_philo(t_philo_d *data, int index_dead)
