@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 16:46:35 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/26 16:23:16 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ void	message(t_state new_state, t_guy *philo)
 
 	pthread_mutex_lock(philo->state_m);
 	if (philo->state == DEAD)
+	{
+		pthread_mutex_unlock(philo->state_m);
 		return ;
+	}
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
 		printf("%ld %d has taken a fork\n", curr_time, philo->index + 1);
