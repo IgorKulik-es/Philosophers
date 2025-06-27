@@ -1,7 +1,7 @@
 NAME = philo
 BONUSNAME = philo_bonus
 
-SRC = philo_main.c threader.c cleaner.c initializer.c basics.c
+SRC = philo_main.c threader.c cleaner.c initializer.c basics.c monitor.c
 BONUSSRC =
 
 SRCSDIR = src
@@ -21,7 +21,7 @@ RM = rm -f
 all: $(NAME)
 bonus: $(BONUSNAME)
 
-$(NAME): $(LIBRARY) $(OBJS)
+$(NAME): $(LIBRARY) $(OBJDIR) $(OBJS)
 	cc $(OBJS) $(LIBRARY) -o $(NAME) $(MFLAGS)
 
 $(BONUSNAME): $(BONUSOBJS) $(LIBRARY)
@@ -29,6 +29,9 @@ $(BONUSNAME): $(BONUSOBJS) $(LIBRARY)
 
 $(OBJDIR)/%.o: $(SRCSDIR)/%.c
 	cc $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
 
 clean:
 	$(RM) $(OBJS) $(BONUSOBJS)

@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:29:21 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 15:17:04 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/27 17:56:22 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@ int	main(int argc, char **argv)
 	if (read_values(&data, argc, argv) != 0)
 	{
 		write(2, "Argument error\n", 15);
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	initialize_metadata(&data);
-	printf("Num philos:%d, start time:%ld, time to die:%d\n", data.num_phil, data.start, data.life.die);
+	if (initialize_metadata(&data))
+	{
+		write(2, "Malloc error\n", 12);
+		return (EXIT_FAILURE);
+	}
 	initialize_threads(&data);
 	monitor(&data);
 	join_destroy(&data);

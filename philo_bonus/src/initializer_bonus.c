@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initializer.c                                      :+:      :+:    :+:   */
+/*   initializer_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 15:22:38 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/27 19:29:01 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo.h"
+#include "../include/philo_bonus.h"
 
 void	initialize_philo(t_philo_d *data, int ind);
 
@@ -34,29 +34,16 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 
 int	initialize_metadata(t_philo_d *data)
 {
-	int	index;
-
-	index = -1;
 	data->all_alive = 1;
-	data->threads = NULL;
-	data->philos = NULL;
-	data->forks = NULL;
-	data->mutex_fork = NULL;
-	data->mutex_state = NULL;
-	data->threads = (pthread_t *)malloc(data->num_phil * sizeof(pthread_t));
-	data->mutex_fork = (pthread_mutex_t *)malloc(data->num_phil
-			* sizeof(pthread_mutex_t));
-	data->philos = (t_guy *)malloc(data->num_phil * sizeof(t_guy));
-	data->forks = (bool *)malloc(data->num_phil * sizeof(bool));
-	data->mutex_state = malloc(data->num_phil * sizeof(pthread_mutex_t));
-	if (data->forks == NULL || data->philos == NULL || data->philos == NULL
-			|| data->forks == NULL || data->mutex_state == NULL)
-		return (clean_all(data, EXIT_FAILURE));
+	data->sem_forks = sem_open(SEM_FORKS, O_CREAT, 0777, data->num_phil);
+	data->sem_alive = sem_open(SEM_ALIVE, O_CREAT, 0777, 1);
+	if (data->sem_forks == SEM_FAILED)
+		return (EXIT_FAILURE);
+	data->pids = NULL;
+	data->pids = malloc(data->num_phil * sizeof(int));
+	if (data->pids == NULL)
+		return (EXIT_FAILURE);
 	data->start = c_time();
-	while (++index < data->num_phil)
-		initialize_philo(data, index);
-	(data->philos[data->num_phil - 1]).right_m = &(data->mutex_fork[0]);
-	(data->philos[data->num_phil - 1]).fork_r = &(data->forks[0]);
 	return (0);
 }
 
@@ -74,7 +61,7 @@ void	initialize_philo(t_philo_d *data, int ind)
 	if (ind < data->num_phil - 1)
 		(data->philos[ind]).fork_r = &(data->forks[ind + 1]);
 	(data->philos[ind]).state = SLEEP;
-	(data->philos[ind]).meals_had = 0;
+	(data->philos[ind]).meals_left = data->life.food;
 	(data->philos[ind]).index = ind;
 	(data->philos[ind]).life = &(data->life);
 }

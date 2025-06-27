@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:51:31 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/21 13:51:31 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/27 18:04:04 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,5 @@ time_t	c_time(void)
 	struct timeval	time_current;
 
 	gettimeofday(&time_current, NULL);
-	return (time_current.tv_sec * 1000 + time_current.tv_usec / 1000);	
+	return (time_current.tv_sec * 1000 + time_current.tv_usec / 1000);
 }

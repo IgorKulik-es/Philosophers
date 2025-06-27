@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/25 16:05:24 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/27 19:28:06 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 # include <stdio.h>
 # include <pthread.h>
+# include <semaphore.h>
+# include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
@@ -22,6 +24,15 @@
 # include <stdbool.h>
 # define MILLISEC 1000
 # define REF_RATE 100
+# define SEM_FORKS "sem_forks"
+# define SEM_ALIVE "sem_alive"
+# define C_RED "\x1B[31m"
+# define C_GRN "\x1B[32m"
+# define C_YEL "\x1B[33m"
+# define C_BLU "\x1B[34m"
+# define C_MAG "\x1B[35m"
+# define C_CYN "\x1B[36m"
+# define C_RESET "\x1B[0m"
 
 typedef enum e_state
 {
@@ -47,14 +58,9 @@ typedef struct s_one_philo
 	time_t			start;
 	time_t			think_t;
 	time_t			die_t;
-	int				meals_had;
+	int				meals_left;
 	int				index;
 	t_base			*life;
-	pthread_mutex_t	*left_m;
-	pthread_mutex_t	*right_m;
-	pthread_mutex_t	*state_m;
-	bool			*fork_l;
-	bool			*fork_r;
 }				t_guy;
 
 
@@ -62,11 +68,9 @@ typedef struct s_philo_data
 {
 	int				num_phil;
 	int				all_alive;
-	bool			*forks;
-	pthread_t		*threads;
-	pthread_mutex_t	*mutex_fork;
-	pthread_mutex_t	*mutex_state;
-	t_guy			*philos;
+	int				*pids;
+	char			*sem_forks;
+	sem_t			*sem_alive;
 	t_base			life;
 	time_t			start;
 }				t_philo_d;
