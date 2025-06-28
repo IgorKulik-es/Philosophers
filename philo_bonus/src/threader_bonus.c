@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threader_bonus.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
+/*   Updated: 2025/06/28 18:33:31 by ikulik           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/philo_bonus.h"
+
+static void	life_cycle(t_philo_d *data, int index);
+static void	try_to_eat(t_guy *philo);
+
+int	give_birth(t_philo_d *data, int index)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == -1)
+		return (EXIT_FAILURE);
+	if (pid == 0)
+	{
+		life_cycle(data, index);
+		clean_child(data, EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
+	}
+	else
+		data->pids[index] = pid;
+	return (EXIT_SUCCESS);
+}
+
+static void	life_cycle(t_philo_d *data, int index)
+{
+	t_guy		philo;
+	pthread_t	mon_dead_think;
+	pthread_t	mon_poison;
+
+	init_philo_b(data, &philo, index);
+	pthread_create(&mon_dead_think, NULL, monitor_dead, (void *)&philo);
+	pthread_create(&mon_poison, NULL, wait_poison, (void *)&philo);
+	pthread_detach(mon_poison);
+	while (philo.state != DEAD && philo.meals_left != 0)
+	{
+		if (philo.state == THINK || philo.state == SLEEP)
+			try_to_eat(&philo);
+		if (philo.state == EAT)
+		{
+			message_b(SLEEP, &philo);
+			usleep(data->life.sleep * MILLISEC);
+		}
+	}
+	pthread_join(mon_dead_think, NULL);
+}
+
+static void	try_to_eat(t_guy *philo)
+{
+	sem_wait(philo->sem_forks);
+	message_b(FORK, philo);
+	sem_wait(philo->sem_forks);
+	message_b(FORK, philo);
+	if (philo->state != DEAD)
+	{
+		message_b(EAT, philo);
+		if (philo->meals_left > 0)
+			(philo->meals_left)--;
+		philo->die_t = c_time() + philo->data->life.die;
+		philo->think_t = c_time() + philo->data->life.sleep;
+		usleep(philo->data->life.eat * MILLISEC);
+	}
+	sem_post(philo->sem_forks);
+	sem_post(philo->sem_forks);
+}

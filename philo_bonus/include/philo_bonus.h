@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 19:28:06 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/28 18:05:43 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <sys/wait.h>
 # include <unistd.h>
-# include <limits.h>
-# include <stdbool.h>
 # define MILLISEC 1000
-# define REF_RATE 100
+# define REF_RATE 200
 # define SEM_FORKS "sem_forks"
 # define SEM_ALIVE "sem_alive"
 # define C_RED "\x1B[31m"
@@ -52,6 +51,17 @@ typedef struct s_life_data
 	int	food;
 }			t_base;
 
+typedef struct s_philo_data
+{
+	int				num_phil;
+	int				all_alive;
+	int				*pids;
+	sem_t			*sem_forks;
+	sem_t			*sem_alive;
+	t_base			life;
+	time_t			start;
+}				t_philo_d;
+
 typedef struct s_one_philo
 {
 	t_state			state;
@@ -60,31 +70,22 @@ typedef struct s_one_philo
 	time_t			die_t;
 	int				meals_left;
 	int				index;
-	t_base			*life;
+	sem_t			*sem_forks;
+	sem_t			*sem_poison;
+	t_philo_d		*data;
 }				t_guy;
-
-
-typedef struct s_philo_data
-{
-	int				num_phil;
-	int				all_alive;
-	int				*pids;
-	char			*sem_forks;
-	sem_t			*sem_alive;
-	t_base			life;
-	time_t			start;
-}				t_philo_d;
-
-
 
 int		ft_atoi(const char *nptr);
 time_t	c_time(void);
 int		read_values(t_philo_d *data, int argc, char **argv);
-int		initialize_metadata(t_philo_d *data);
-int		clean_all(t_philo_d *data, int error_code);
-void	*life_cycle(void *input);
-void	message(t_state new_state, t_guy *philo);
-int		monitor(t_philo_d *data);
-void	initialize_threads(t_philo_d *data);
-void	join_destroy(t_philo_d *data);
+int		initialize_metadata_b(t_philo_d *data);
+void	init_philo_b(t_philo_d *data, t_guy *philo, int index);
+int		give_birth(t_philo_d *data, int index);
+void	*monitor_dead(void *philo_arg);
+void	*wait_poison(void *philo_arg);
+void	inject_poison(t_philo_d *data);
+void	message_b(t_state new_state, t_guy *philo);
+int		clean_child(t_philo_d *data, int error_code);
+int		clean_parent(t_philo_d *data, int err_code);
+
 #endif

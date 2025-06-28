@@ -1,0 +1,90 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitor_bonus.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
+/*   Updated: 2025/06/28 18:40:30 by ikulik           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/philo_bonus.h"
+
+static int	check_dead_think_b(t_guy *philo, t_philo_d *data);
+static int	kill_philo_b(t_guy *philo, t_philo_d *data);
+
+void	*wait_poison(void *philo_arg)
+{
+	t_guy	*philo;
+
+	philo = (t_guy *)philo_arg;
+	sem_wait(philo->sem_poison);
+	philo->state = DEAD;
+	clean_child(philo->data, 1);
+	exit(1);
+	return (NULL);
+}
+
+void	*monitor_dead(void *philo_arg)
+{
+	t_guy		*philo;
+	t_philo_d	*data;
+
+	philo = (t_guy *)philo_arg;
+	data = philo->data;
+	while (philo->state != DEAD && philo->meals_left != 0)
+	{
+		usleep(REF_RATE);
+		if (check_dead_think_b(philo, data))
+			return (NULL);
+	}
+	return (NULL);
+}
+
+static int	check_dead_think_b(t_guy *philo, t_philo_d *data)
+{
+	time_t	time_c;
+
+	time_c = c_time();
+	if (time_c >= philo->die_t
+		&& philo->meals_left != 0)
+		return (kill_philo_b(philo, data));
+	if (time_c >= philo->think_t
+		&& philo->state == SLEEP)
+		message_b(THINK, philo);
+	return (0);
+}
+
+static int	kill_philo_b(t_guy *philo, t_philo_d *data)
+{
+	int	index;
+
+	index = -1;
+	message_b(DEAD, philo);
+	while (++index < data->num_phil)
+		sem_post(philo->sem_poison);
+	return (1);
+}
+
+void	message_b(t_state new_state, t_guy *philo)
+{
+	time_t	curr_time;
+
+	if (philo->state == DEAD)
+		return ;
+	if (new_state != FORK)
+		philo->state = new_state;
+	curr_time = c_time() - philo->start;
+	if (new_state == FORK)
+		printf(C_CYN "%ld %d has taken a fork\n", curr_time, philo->index + 1);
+	if (new_state == EAT)
+		printf(C_YEL "%ld %d is eating\n", curr_time, philo->index + 1);
+	if (new_state == SLEEP)
+		printf(C_GRN "%ld %d is sleeping\n", curr_time, philo->index + 1);
+	if (new_state == THINK)
+		printf(C_MAG "%ld %d is thinking\n", curr_time, philo->index + 1);
+	if (new_state == DEAD)
+		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
+}
