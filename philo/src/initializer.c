@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 18:41:14 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 14:23:31 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,13 @@ void	initialize_threads(t_philo_d *data)
 	{
 		pthread_create(&(data->threads[index]), NULL, life_cycle,
 			(void *)&(data->philos[index]));
-		index++;
+		index += 2;
+	}
+	index = 1;
+	while (index < data->num_phil)
+	{
+		pthread_create(&(data->threads[index]), NULL, life_cycle,
+			(void *)&(data->philos[index]));
+		index += 2;
 	}
 }

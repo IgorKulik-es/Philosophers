@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/28 18:05:43 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 16:26:08 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define REF_RATE 200
 # define SEM_FORKS "sem_forks"
 # define SEM_ALIVE "sem_alive"
+# define SEM_QUEUE "sem_queue"
+# define SEM_FED "sem_all_fed"
 # define C_RED "\x1B[31m"
 # define C_GRN "\x1B[32m"
 # define C_YEL "\x1B[33m"
@@ -58,6 +60,8 @@ typedef struct s_philo_data
 	int				*pids;
 	sem_t			*sem_forks;
 	sem_t			*sem_alive;
+	sem_t			*sem_queue;
+	sem_t			*sem_fed;
 	t_base			life;
 	time_t			start;
 }				t_philo_d;
@@ -72,6 +76,8 @@ typedef struct s_one_philo
 	int				index;
 	sem_t			*sem_forks;
 	sem_t			*sem_poison;
+	sem_t			*sem_queue;
+	sem_t			*sem_fed;
 	t_philo_d		*data;
 }				t_guy;
 

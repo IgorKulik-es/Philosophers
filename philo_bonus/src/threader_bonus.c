@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/28 18:33:31 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 16:17:39 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,12 @@ static void	life_cycle(t_philo_d *data, int index)
 
 static void	try_to_eat(t_guy *philo)
 {
+	sem_wait(philo->sem_queue);
 	sem_wait(philo->sem_forks);
 	message_b(FORK, philo);
 	sem_wait(philo->sem_forks);
 	message_b(FORK, philo);
+	sem_post(philo->sem_queue);
 	if (philo->state != DEAD)
 	{
 		message_b(EAT, philo);

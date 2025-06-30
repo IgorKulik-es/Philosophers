@@ -1,17 +1,14 @@
-NAME = philo
-BONUSNAME = philo_bonus
+NAME = philo_bonus
 
-SRC = philo_main.c threader.c cleaner.c initializer.c basics.c monitor.c
-BONUSSRC =
+SRC = philo_main_bonus.c threader_bonus.c cleaner_bonus.c initializer_bonus.c\
+basics.c monitor_bonus.c
 
 SRCSDIR = src
 OBJDIR = obj
 
 SRCS = $(addprefix $(SRCSDIR)/, $(SRC))
-BONUSSRCS = $(addprefix $(OBJDIR)/, $(BONUSSRC))
 
 OBJS = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
-BONUSOBJS = $(addprefix $(OBJDIR)/,  $(notdir $(BONUSSRCS:.c=.o)))
 
 CFLAGS = -Wall -Wextra -Werror -g
 MFLAGS = -lpthread
@@ -19,7 +16,6 @@ MFLAGS = -lpthread
 RM = rm -f
 
 all: $(NAME)
-bonus: $(BONUSNAME)
 
 $(NAME): $(LIBRARY) $(OBJDIR) $(OBJS)
 	cc $(OBJS) $(LIBRARY) -o $(NAME) $(MFLAGS)

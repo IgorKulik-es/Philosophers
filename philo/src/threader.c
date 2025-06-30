@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 18:11:27 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 15:12:11 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	try_to_eat(t_guy *philo);
 static void	grab_forks(t_guy *philo);
+static void	update_state(t_guy *philo);
 
 void	*life_cycle(void *input)
 {
@@ -46,6 +47,26 @@ void	*life_cycle(void *input)
 static void	try_to_eat(t_guy *philo)
 {
 	grab_forks(philo);
+	update_state(philo);
+	pthread_mutex_lock(philo->state_m);
+	if (philo->state != DEAD)
+	{
+		pthread_mutex_unlock(philo->state_m);
+		usleep(philo->life->eat * MILLISEC);
+	}
+	else
+		pthread_mutex_unlock(philo->state_m);
+	if (philo->left_m != philo->right_m)
+	{
+		*(philo->fork_l) = true;
+		*(philo->fork_r) = true;
+		pthread_mutex_unlock(philo->right_m);
+	}
+	pthread_mutex_unlock(philo->left_m);
+}
+
+static void	update_state(t_guy *philo)
+{
 	if (philo->right_m != philo->left_m)
 	{
 		message(EAT, philo);
@@ -56,20 +77,6 @@ static void	try_to_eat(t_guy *philo)
 		philo->think_t = c_time() + philo->life->eat + philo->life->sleep;
 		pthread_mutex_unlock(philo->state_m);
 	}
-	pthread_mutex_lock(philo->state_m);
-	if (philo->state != DEAD)
-	{
-		pthread_mutex_unlock(philo->state_m);
-		usleep(philo->life->eat * MILLISEC);
-	}
-	else
-		pthread_mutex_unlock(philo->state_m);
-	if (philo->left_m != philo->right_m)
-		*(philo->fork_l) = true;
-	if (philo->left_m != philo->right_m)
-		*(philo->fork_r) = true;
-	pthread_mutex_unlock(philo->right_m);
-	pthread_mutex_unlock(philo->left_m);
 }
 
 static void	grab_forks(t_guy *philo)

@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 15:50:47 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 16:51:41 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ typedef struct s_one_philo
 	bool			*fork_r;
 }				t_guy;
 
-
 typedef struct s_philo_data
 {
 	int				num_phil;
@@ -78,8 +77,6 @@ typedef struct s_philo_data
 	time_t			start;
 }				t_philo_d;
 
-
-
 int		ft_atoi(const char *nptr);
 time_t	c_time(void);
 int		read_values(t_philo_d *data, int argc, char **argv);
@@ -90,4 +87,5 @@ void	message(t_state new_state, t_guy *philo);
 int		monitor(t_philo_d *data);
 void	initialize_threads(t_philo_d *data);
 void	join_destroy(t_philo_d *data);
+
 #endif

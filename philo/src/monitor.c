@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 18:10:49 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 16:46:04 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,16 @@ void	message(t_state new_state, t_guy *philo)
 	}
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
-		printf(C_CYN "%ld %d has taken a fork\n", curr_time, philo->index + 1);
+		printf(C_CYN "%ld %d has taken a fork\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == EAT)
-		printf(C_YEL "%ld %d is eating\n", curr_time, philo->index + 1);
+		printf(C_YEL "%ld %d is eating\n" C_RESET, curr_time, philo->index + 1);
 	if (new_state == SLEEP)
-		printf(C_GRN "%ld %d is sleeping\n", curr_time, philo->index + 1);
+		printf(C_GRN "%ld %d is sleeping\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == THINK)
-		printf(C_MAG "%ld %d is thinking\n", curr_time, philo->index + 1);
+		printf(C_MAG "%ld %d is thinking\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == DEAD)
 		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
 	if (new_state != FORK)

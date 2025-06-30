@@ -6,14 +6,13 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/28 18:40:30 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/06/30 15:49:30 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
 static int	check_dead_think_b(t_guy *philo, t_philo_d *data);
-static int	kill_philo_b(t_guy *philo, t_philo_d *data);
 
 void	*wait_poison(void *philo_arg)
 {
@@ -22,8 +21,8 @@ void	*wait_poison(void *philo_arg)
 	philo = (t_guy *)philo_arg;
 	sem_wait(philo->sem_poison);
 	philo->state = DEAD;
-	clean_child(philo->data, 1);
-	exit(1);
+	if (philo->data->num_phil == 1)
+		sem_post(philo->sem_forks);
 	return (NULL);
 }
 
@@ -50,22 +49,15 @@ static int	check_dead_think_b(t_guy *philo, t_philo_d *data)
 	time_c = c_time();
 	if (time_c >= philo->die_t
 		&& philo->meals_left != 0)
-		return (kill_philo_b(philo, data));
+	{
+		message_b(DEAD, philo);
+		inject_poison(data);
+		return (EXIT_FAILURE);
+	}
 	if (time_c >= philo->think_t
 		&& philo->state == SLEEP)
 		message_b(THINK, philo);
-	return (0);
-}
-
-static int	kill_philo_b(t_guy *philo, t_philo_d *data)
-{
-	int	index;
-
-	index = -1;
-	message_b(DEAD, philo);
-	while (++index < data->num_phil)
-		sem_post(philo->sem_poison);
-	return (1);
+	return (EXIT_SUCCESS);
 }
 
 void	message_b(t_state new_state, t_guy *philo)
@@ -78,13 +70,16 @@ void	message_b(t_state new_state, t_guy *philo)
 		philo->state = new_state;
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
-		printf(C_CYN "%ld %d has taken a fork\n", curr_time, philo->index + 1);
+		printf(C_CYN "%ld %d has taken a fork\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == EAT)
-		printf(C_YEL "%ld %d is eating\n", curr_time, philo->index + 1);
+		printf(C_YEL "%ld %d is eating\n" C_RESET, curr_time, philo->index + 1);
 	if (new_state == SLEEP)
-		printf(C_GRN "%ld %d is sleeping\n", curr_time, philo->index + 1);
+		printf(C_GRN "%ld %d is sleeping\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == THINK)
-		printf(C_MAG "%ld %d is thinking\n", curr_time, philo->index + 1);
+		printf(C_MAG "%ld %d is thinking\n" C_RESET,
+			curr_time, philo->index + 1);
 	if (new_state == DEAD)
 		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
 }
