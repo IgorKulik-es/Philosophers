@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:17:39 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/01 16:25:47 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	give_birth(t_philo_d *data)
 		}
 		else
 			data->pids[index] = pid;
+		index++;
 	}
 	return (EXIT_SUCCESS);
 }
