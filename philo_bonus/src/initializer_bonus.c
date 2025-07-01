@@ -34,13 +34,12 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 
 int	initialize_metadata_b(t_philo_d *data)
 {
-	data->all_alive = 1;
 	data->sem_forks = sem_open(SEM_FORKS, O_CREAT, 0777, data->num_phil);
-	data->sem_alive = sem_open(SEM_ALIVE, O_CREAT, 0777, 0);
 	data->sem_queue = sem_open(SEM_QUEUE, O_CREAT, 0777, 1);
-	data->sem_fed = sem_open(SEM_FED, O_CREAT, 0777, 0);
-	if (data->sem_forks == SEM_FAILED || data->sem_alive == SEM_FAILED
-		|| data->sem_queue == SEM_FAILED || data->sem_fed == SEM_FAILED)
+	data->sem_stop = sem_open(SEM_STOP, O_CREAT, 0777, 0);
+	data->sem_fb = sem_open(SEM_FEEDBACK, O_CREAT, 0777, 0);
+	if (data->sem_forks == SEM_FAILED || data->sem_stop == SEM_FAILED
+		|| data->sem_queue == SEM_FAILED || data->sem_fb == SEM_FAILED)
 		return (clean_parent(data, EXIT_FAILURE));
 	data->pids = NULL;
 	data->pids = malloc(data->num_phil * sizeof(int));
@@ -59,7 +58,8 @@ void	init_philo_b(t_philo_d *data, t_guy *philo, int index)
 	philo->meals_left = data->life.food;
 	philo->index = index;
 	philo->sem_forks = data->sem_forks;
-	philo->sem_poison = data->sem_alive;
+	philo->sem_poison = data->sem_stop;
 	philo->sem_queue = data->sem_queue;
+	philo->sem_fb = data->sem_fb;
 	philo->data = data;
 }

@@ -43,3 +43,13 @@ time_t	c_time(void)
 	gettimeofday(&time_current, NULL);
 	return (time_current.tv_sec * 1000 + time_current.tv_usec / 1000);
 }
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
+}

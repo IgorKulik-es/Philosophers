@@ -15,27 +15,20 @@
 int	main(int argc, char **argv)
 {
 	t_philo_d	data;
-	int			index;
-	int			error;
+	int			error_code;
 
-	index = -1;
+	error_code = 0;
 	if (read_values(&data, argc, argv) != 0)
-	{
-		write(2, "Argument error\n", 15);
-		return (EXIT_FAILURE);
-	}
+		return (print_error("philo: argument error"));
 	if (initialize_metadata_b(&data))
+		return (print_error("philo: malloc or semaphore error"));
+	if (give_birth(&data) != 0)
 	{
-		write(2, "Malloc or semaphore error\n", 26);
-		return (EXIT_FAILURE);
+		sem_fill(&data, data.sem_stop);
+		print_error("philo: fork error");
+		error_code = EXIT_FAILURE;
 	}
-	while (++index < data.num_phil)
-	{
-		if (give_birth(&data, index) != 0)
-			inject_poison(&data);
-	}
-	while (--index >= 0)
-		waitpid(data.pids[index], &error, 0);
+	wait_sems_pids(&data);
 	clean_parent(&data, 0);
-	return (0);
+	return (error_code);
 }

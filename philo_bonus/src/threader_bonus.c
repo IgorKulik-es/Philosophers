@@ -15,21 +15,26 @@
 static void	life_cycle(t_philo_d *data, int index);
 static void	try_to_eat(t_guy *philo);
 
-int	give_birth(t_philo_d *data, int index)
+int	give_birth(t_philo_d *data)
 {
 	int	pid;
+	int	index;
 
-	pid = fork();
-	if (pid == -1)
-		return (EXIT_FAILURE);
-	if (pid == 0)
+	index = 0;
+	while (index < data->num_phil)
 	{
-		life_cycle(data, index);
-		clean_child(data, EXIT_SUCCESS);
-		exit(EXIT_SUCCESS);
+		pid = fork();
+		if (pid == -1)
+			return (EXIT_FAILURE);
+		if (pid == 0)
+		{
+			life_cycle(data, index);
+			clean_child(data, EXIT_SUCCESS);
+			exit(EXIT_SUCCESS);
+		}
+		else
+			data->pids[index] = pid;
 	}
-	else
-		data->pids[index] = pid;
 	return (EXIT_SUCCESS);
 }
 
@@ -42,7 +47,6 @@ static void	life_cycle(t_philo_d *data, int index)
 	init_philo_b(data, &philo, index);
 	pthread_create(&mon_dead_think, NULL, monitor_dead, (void *)&philo);
 	pthread_create(&mon_poison, NULL, wait_poison, (void *)&philo);
-	pthread_detach(mon_poison);
 	while (philo.state != DEAD && philo.meals_left != 0)
 	{
 		if (philo.state == THINK || philo.state == SLEEP)
@@ -53,7 +57,10 @@ static void	life_cycle(t_philo_d *data, int index)
 			usleep(data->life.sleep * MILLISEC);
 		}
 	}
+	if (philo.meals_left == 0)
+		sem_post(philo.sem_fb);
 	pthread_join(mon_dead_think, NULL);
+	pthread_join(mon_poison, NULL);
 }
 
 static void	try_to_eat(t_guy *philo)

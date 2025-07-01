@@ -24,9 +24,9 @@
 # define MILLISEC 1000
 # define REF_RATE 200
 # define SEM_FORKS "sem_forks"
-# define SEM_ALIVE "sem_alive"
+# define SEM_STOP "sem_stopper"
 # define SEM_QUEUE "sem_queue"
-# define SEM_FED "sem_all_fed"
+# define SEM_FEEDBACK "sem_all_fed"
 # define C_RED "\x1B[31m"
 # define C_GRN "\x1B[32m"
 # define C_YEL "\x1B[33m"
@@ -56,12 +56,11 @@ typedef struct s_life_data
 typedef struct s_philo_data
 {
 	int				num_phil;
-	int				all_alive;
 	int				*pids;
 	sem_t			*sem_forks;
-	sem_t			*sem_alive;
 	sem_t			*sem_queue;
-	sem_t			*sem_fed;
+	sem_t			*sem_stop;
+	sem_t			*sem_fb;
 	t_base			life;
 	time_t			start;
 }				t_philo_d;
@@ -75,21 +74,24 @@ typedef struct s_one_philo
 	int				meals_left;
 	int				index;
 	sem_t			*sem_forks;
-	sem_t			*sem_poison;
 	sem_t			*sem_queue;
-	sem_t			*sem_fed;
+	sem_t			*sem_poison;
+	sem_t			*sem_fb;
 	t_philo_d		*data;
 }				t_guy;
 
 int		ft_atoi(const char *nptr);
 time_t	c_time(void);
+size_t	ft_strlen(const char *s);
+int		print_error(char *error);
 int		read_values(t_philo_d *data, int argc, char **argv);
 int		initialize_metadata_b(t_philo_d *data);
 void	init_philo_b(t_philo_d *data, t_guy *philo, int index);
-int		give_birth(t_philo_d *data, int index);
+void	wait_sems_pids(t_philo_d *data);
+int		give_birth(t_philo_d *data);
 void	*monitor_dead(void *philo_arg);
 void	*wait_poison(void *philo_arg);
-void	inject_poison(t_philo_d *data);
+void	sem_fill(t_philo_d *data, sem_t *sem);
 void	message_b(t_state new_state, t_guy *philo);
 int		clean_child(t_philo_d *data, int error_code);
 int		clean_parent(t_philo_d *data, int err_code);

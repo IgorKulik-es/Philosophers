@@ -14,6 +14,28 @@
 
 static int	check_dead_think_b(t_guy *philo, t_philo_d *data);
 
+void	wait_sems_pids(t_philo_d *data)
+{
+	int	index;
+
+	index = 0;
+	while (index < data->num_phil)
+	{
+		sem_wait(data->sem_fb);
+		index++;
+	}
+	while (index > 0)
+	{
+		sem_post(data->sem_stop);
+		index--;
+	}
+	while (index < data->num_phil)
+	{
+		waitpid(data->pids[index], NULL, 0);
+		index++;
+	}
+}
+
 void	*wait_poison(void *philo_arg)
 {
 	t_guy	*philo;
@@ -51,7 +73,7 @@ static int	check_dead_think_b(t_guy *philo, t_philo_d *data)
 		&& philo->meals_left != 0)
 	{
 		message_b(DEAD, philo);
-		inject_poison(data);
+		sem_fill(data, data->sem_fb);
 		return (EXIT_FAILURE);
 	}
 	if (time_c >= philo->think_t
