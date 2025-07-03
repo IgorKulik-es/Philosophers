@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:51:59 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/03 18:52:41 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 
 int	initialize_metadata_b(t_philo_d *data)
 {
+	sem_unlink(SEM_FEEDBACK);
+	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_QUEUE);
+	sem_unlink(SEM_STOP);
 	data->sem_forks = sem_open(SEM_FORKS, O_CREAT, 0777, data->num_phil);
 	data->sem_queue = sem_open(SEM_QUEUE, O_CREAT, 0777, 1);
 	data->sem_stop = sem_open(SEM_STOP, O_CREAT, 0777, 0);
