@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 15:12:11 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/03 18:38:55 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,23 +81,14 @@ static void	update_state(t_guy *philo)
 
 static void	grab_forks(t_guy *philo)
 {
-	if (philo->index % 2 == 0)
-	{
-		pthread_mutex_lock(philo->left_m);
-		if (*(philo->fork_l))
-			message(FORK, philo);
-		*(philo->fork_l) = false;
-	}
+	pthread_mutex_lock(philo->left_m);
+	if (*(philo->fork_l))
+		message(FORK, philo);
+	*(philo->fork_l) = false;
 	if (philo->right_m != philo->left_m)
 	{
 		pthread_mutex_lock(philo->right_m);
 		*(philo->fork_r) = false;
-		message(FORK, philo);
-	}
-	if (philo->index % 2 == 1)
-	{
-		pthread_mutex_lock(philo->left_m);
-		*(philo->fork_l) = false;
 		message(FORK, philo);
 	}
 }
