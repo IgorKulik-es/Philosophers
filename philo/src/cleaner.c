@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:45:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 14:54:10 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/24 18:44:31 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,5 @@ void	join_destroy(t_philo_d *data)
 		pthread_mutex_destroy(&(data->mutex_state[index]));
 		index++;
 	}
+	pthread_mutex_destroy(&(data->mutex_write));
 }

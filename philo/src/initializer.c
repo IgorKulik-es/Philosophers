@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/07/03 17:20:42 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/24 18:52:28 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 		data->life.food = ft_atoi(argv[5]);
 	if (data->num_phil < 1 || data->life.die < 1
 		|| (data->life.food < 1 && argc == 6))
+	{
+		write(2, "Argument error\n", 15);
 		return (1);
+	}
 	return (0);
 }
 
@@ -77,6 +80,7 @@ void	initialize_philo(t_philo_d *data, int ind)
 	(data->philos[ind]).meals_left = data->life.food;
 	(data->philos[ind]).index = ind;
 	(data->philos[ind]).life = &(data->life);
+	(data->philos[ind]).write_m = &(data->mutex_write);
 }
 
 void	initialize_threads(t_philo_d *data)
@@ -84,6 +88,7 @@ void	initialize_threads(t_philo_d *data)
 	int	index;
 
 	index = 0;
+	pthread_mutex_init(&(data->mutex_write), NULL);
 	while (index < data->num_phil)
 	{
 		pthread_mutex_init(&(data->mutex_fork[index]), NULL);

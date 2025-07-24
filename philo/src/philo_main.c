@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:29:21 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 17:56:22 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/24 18:46:16 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ int	main(int argc, char **argv)
 	t_philo_d	data;
 
 	if (read_values(&data, argc, argv) != 0)
-	{
-		write(2, "Argument error\n", 15);
 		return (EXIT_FAILURE);
-	}
 	if (initialize_metadata(&data))
 	{
 		write(2, "Malloc error\n", 12);

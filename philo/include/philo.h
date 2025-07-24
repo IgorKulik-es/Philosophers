@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:51:41 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/24 18:51:51 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_one_philo
 	pthread_mutex_t	*left_m;
 	pthread_mutex_t	*right_m;
 	pthread_mutex_t	*state_m;
+	pthread_mutex_t	*write_m;
 	bool			*fork_l;
 	bool			*fork_r;
 }				t_guy;
@@ -72,6 +73,7 @@ typedef struct s_philo_data
 	pthread_t		*threads;
 	pthread_mutex_t	*mutex_fork;
 	pthread_mutex_t	*mutex_state;
+	pthread_mutex_t	mutex_write;
 	t_guy			*philos;
 	t_base			life;
 	time_t			start;

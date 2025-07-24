@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:46:04 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/24 19:39:19 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	check_dead_think(t_philo_d *data, int index);
 static int	kill_philo(t_philo_d *data, int index_dead);
+static void	print_message(t_state new_state, t_guy *philo);
 
 int	monitor(t_philo_d *data)
 {
@@ -23,7 +24,6 @@ int	monitor(t_philo_d *data)
 	food_left = -1;
 	while (data->all_alive == 1 && food_left != 0)
 	{
-		usleep(REF_RATE);
 		index = -1;
 		food_left = 0;
 		while (++index < data->num_phil)
@@ -80,7 +80,6 @@ static int	kill_philo(t_philo_d *data, int index_dead)
 
 void	message(t_state new_state, t_guy *philo)
 {
-	time_t	curr_time;
 
 	pthread_mutex_lock(philo->state_m);
 	if (philo->state == DEAD)
@@ -88,6 +87,16 @@ void	message(t_state new_state, t_guy *philo)
 		pthread_mutex_unlock(philo->state_m);
 		return ;
 	}
+	pthread_mutex_lock(philo->write_m);
+	print_message(new_state, philo);
+	pthread_mutex_unlock(philo->write_m);
+	pthread_mutex_unlock(philo->state_m);
+}
+
+static void	print_message(t_state new_state, t_guy *philo)
+{
+	time_t	curr_time;
+
 	curr_time = c_time() - philo->start;
 	if (new_state == FORK)
 		printf(C_CYN "%ld %d has taken a fork\n" C_RESET,
@@ -104,5 +113,4 @@ void	message(t_state new_state, t_guy *philo)
 		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
 	if (new_state != FORK)
 		philo->state = new_state;
-	pthread_mutex_unlock(philo->state_m);
 }
