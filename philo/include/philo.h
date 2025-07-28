@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/07/24 18:51:51 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/28 15:48:33 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,7 @@ void	message(t_state new_state, t_guy *philo);
 int		monitor(t_philo_d *data);
 void	initialize_threads(t_philo_d *data);
 void	join_destroy(t_philo_d *data);
+int		print_error(char *error);
+size_t	ft_strlen(const char *s);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:29:21 by ikulik            #+#    #+#             */
-/*   Updated: 2025/07/24 18:46:16 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/28 15:15:08 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,9 @@ int	main(int argc, char **argv)
 	t_philo_d	data;
 
 	if (read_values(&data, argc, argv) != 0)
-		return (EXIT_FAILURE);
+		return (print_error("philo: argument error"));
 	if (initialize_metadata(&data))
-	{
-		write(2, "Malloc error\n", 12);
-		return (EXIT_FAILURE);
-	}
+		return (print_error("philo: malloc or semaphore error"));
 	initialize_threads(&data);
 	monitor(&data);
 	join_destroy(&data);

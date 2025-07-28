@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/07/03 18:52:41 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/28 15:13:25 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	initialize_philo(t_philo_d *data, int ind);
 int	read_values(t_philo_d *data, int argc, char **argv)
 {
 	if ((argc != 5) && (argc != 6))
-		return (1);
+		return (EXIT_FAILURE);
 	data->life.num = ft_atoi(argv[1]);
 	data->num_phil = data->life.num;
 	data->life.die = ft_atoi(argv[2]);
@@ -27,9 +27,10 @@ int	read_values(t_philo_d *data, int argc, char **argv)
 	if (argc == 6)
 		data->life.food = ft_atoi(argv[5]);
 	if (data->num_phil < 1 || data->life.die < 1
+		|| data->life.eat < 1 || data->life.sleep < 1
 		|| (data->life.food < 1 && argc == 6))
-		return (1);
-	return (0);
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 int	initialize_metadata_b(t_philo_d *data)

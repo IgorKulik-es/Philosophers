@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:51:31 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/27 18:04:04 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/07/28 15:48:19 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,14 @@ time_t	c_time(void)
 
 	gettimeofday(&time_current, NULL);
 	return (time_current.tv_sec * 1000 + time_current.tv_usec / 1000);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
 }
