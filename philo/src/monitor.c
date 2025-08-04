@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/07/24 19:39:19 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/04 18:48:20 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,11 @@ int	monitor(t_philo_d *data)
 		{
 			if (check_dead_think(data, index))
 				return (1);
+			pthread_mutex_lock(&(data->mutex_state[index]));
 			food_left += (data->philos[index]).meals_left;
+			pthread_mutex_unlock(&(data->mutex_state[index]));
 		}
+		usleep(REF_RATE);
 	}
 	return (1);
 }
@@ -110,7 +113,7 @@ static void	print_message(t_state new_state, t_guy *philo)
 		printf(C_MAG "%ld %d is thinking\n" C_RESET,
 			curr_time, philo->index + 1);
 	if (new_state == DEAD)
-		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
+		printf(C_RED "%ld %d died\n" C_RESET, curr_time, philo->index + 1);
 	if (new_state != FORK)
 		philo->state = new_state;
 }

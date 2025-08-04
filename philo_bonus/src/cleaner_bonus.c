@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 18:45:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:01:20 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/04 18:06:19 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	clean_child(t_philo_d *data, int error_code)
 	sem_close(data->sem_forks);
 	sem_close(data->sem_queue);
 	sem_close(data->sem_fb);
+	sem_close(data->sem_write);
 	free(data->pids);
 	return (error_code);
 }
@@ -40,6 +41,10 @@ int	clean_parent(t_philo_d *data, int err_code)
 		sem_close(data->sem_fb);
 	if (data->sem_fb)
 		sem_unlink(SEM_FEEDBACK);
+	if (data->sem_write)
+		sem_close(data->sem_write);
+	if (data->sem_write)
+		sem_unlink(SEM_WRITE);
 	if (data->pids)
 		free(data->pids);
 	return (err_code);

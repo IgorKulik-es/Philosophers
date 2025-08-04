@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 15:49:30 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/04 19:24:27 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ void	*wait_poison(void *philo_arg)
 
 	philo = (t_guy *)philo_arg;
 	sem_wait(philo->sem_poison);
+	sem_wait(philo->sem_write);
 	philo->state = DEAD;
+	sem_post(philo->sem_write);
 	if (philo->data->num_phil == 1)
 		sem_post(philo->sem_forks);
 	return (NULL);
@@ -55,12 +57,16 @@ void	*monitor_dead(void *philo_arg)
 
 	philo = (t_guy *)philo_arg;
 	data = philo->data;
+	sem_wait(philo->sem_write);
 	while (philo->state != DEAD && philo->meals_left != 0)
 	{
+		sem_post(philo->sem_write);
 		usleep(REF_RATE);
 		if (check_dead_think_b(philo, data))
 			return (NULL);
+		sem_wait(philo->sem_write);
 	}
+	sem_post(philo->sem_write);
 	return (NULL);
 }
 
@@ -68,17 +74,26 @@ static int	check_dead_think_b(t_guy *philo, t_philo_d *data)
 {
 	time_t	time_c;
 
+	sem_wait(philo->sem_write);
 	time_c = c_time();
 	if (time_c >= philo->die_t
 		&& philo->meals_left != 0)
 	{
+		sem_post(philo->sem_write);
 		message_b(DEAD, philo);
 		sem_fill(data, data->sem_fb);
 		return (EXIT_FAILURE);
 	}
-	if (time_c >= philo->think_t
-		&& philo->state == SLEEP)
+	else
+		sem_post(philo->sem_write);
+	sem_wait(philo->sem_write);
+	if (time_c >= philo->think_t && philo->state == SLEEP)
+	{
+		sem_post(philo->sem_write);
 		message_b(THINK, philo);
+	}
+	else
+		sem_post(philo->sem_write);
 	return (EXIT_SUCCESS);
 }
 
@@ -86,8 +101,12 @@ void	message_b(t_state new_state, t_guy *philo)
 {
 	time_t	curr_time;
 
+	sem_wait(philo->sem_write);
 	if (philo->state == DEAD)
+	{
+		sem_post(philo->sem_write);
 		return ;
+	}
 	if (new_state != FORK)
 		philo->state = new_state;
 	curr_time = c_time() - philo->start;
@@ -103,5 +122,6 @@ void	message_b(t_state new_state, t_guy *philo)
 		printf(C_MAG "%ld %d is thinking\n" C_RESET,
 			curr_time, philo->index + 1);
 	if (new_state == DEAD)
-		printf(C_RED "%ld %d is dead\n" C_RESET, curr_time, philo->index + 1);
+		printf(C_RED "%ld %d died\n" C_RESET, curr_time, philo->index + 1);
+	sem_post(philo->sem_write);
 }

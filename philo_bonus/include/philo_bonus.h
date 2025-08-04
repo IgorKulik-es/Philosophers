@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/06/30 16:26:08 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/04 15:48:10 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # define SEM_STOP "sem_stopper"
 # define SEM_QUEUE "sem_queue"
 # define SEM_FEEDBACK "sem_all_fed"
+# define SEM_WRITE "sem_write"
 # define C_RED "\x1B[31m"
 # define C_GRN "\x1B[32m"
 # define C_YEL "\x1B[33m"
@@ -61,6 +62,7 @@ typedef struct s_philo_data
 	sem_t			*sem_queue;
 	sem_t			*sem_stop;
 	sem_t			*sem_fb;
+	sem_t			*sem_write;
 	t_base			life;
 	time_t			start;
 }				t_philo_d;
@@ -77,6 +79,7 @@ typedef struct s_one_philo
 	sem_t			*sem_queue;
 	sem_t			*sem_poison;
 	sem_t			*sem_fb;
+	sem_t			*sem_write;
 	t_philo_d		*data;
 }				t_guy;
 
