@@ -3,6 +3,7 @@ NAME = philo
 SRC = philo_main.c threader.c cleaner.c initializer.c basics.c monitor.c
 
 SRCSDIR = src
+OBJDIR = obj
 
 SRCS = $(addprefix $(SRCSDIR)/, $(SRC))
 
@@ -31,4 +32,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+##.PHONY: all clean fclean re

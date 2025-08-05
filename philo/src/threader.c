@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/05 16:05:23 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/05 20:36:47 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,23 +81,24 @@ static void	update_state(t_guy *philo)
 
 static void	grab_forks(t_guy *philo)
 {
-	if (philo->index % 2)
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
+
+	left = philo->left_m;
+	right = philo->right_m;
+	if ((right > left) && philo->index % 2 == 0)
 	{
-		pthread_mutex_lock(philo->left_m);
-		message(FORK, philo);
-		*(philo->fork_l) = false;
+		left = philo->right_m;
+		right = philo->left_m;
 	}
-	if (philo->right_m != philo->left_m)
+	if (left != right)
 	{
-		pthread_mutex_lock(philo->right_m);
+		pthread_mutex_lock(right);
 		message(FORK, philo);
 		*(philo->fork_r) = false;
 	}
-	if (philo->index % 2 == 0)
-	{
-		pthread_mutex_lock(philo->left_m);
-		if (*(philo->fork_l) == true)
-			message(FORK, philo);
-		*(philo->fork_l) = false;
-	}
+	pthread_mutex_lock(left);
+	if (*(philo->fork_l) == true)
+		message(FORK, philo);
+	*(philo->fork_l) = false;
 }
