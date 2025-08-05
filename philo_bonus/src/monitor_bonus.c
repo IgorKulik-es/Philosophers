@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/04 19:24:27 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/05 17:01:05 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ static int	check_dead_think_b(t_guy *philo, t_philo_d *data)
 		&& philo->meals_left != 0)
 	{
 		sem_post(philo->sem_write);
+		usleep(REF_RATE * philo->index * 2);
 		message_b(DEAD, philo);
 		sem_fill(data, data->sem_fb);
 		return (EXIT_FAILURE);

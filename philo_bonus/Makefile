@@ -20,9 +20,6 @@ all: $(NAME)
 $(NAME): $(LIBRARY) $(OBJDIR) $(OBJS)
 	cc $(OBJS) $(LIBRARY) -o $(NAME) $(MFLAGS)
 
-$(BONUSNAME): $(BONUSOBJS) $(LIBRARY)
-	cc $(BONUSOBJS) $(LIBRARY) $(MFLAGS) -o $(BONUSNAME)
-
 $(OBJDIR)/%.o: $(SRCSDIR)/%.c
 	cc $(CFLAGS) -c $< -o $@
 
@@ -36,3 +33,5 @@ fclean: clean
 	$(RM) $(NAME) $(BONUSNAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

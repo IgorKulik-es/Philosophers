@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/04 19:22:09 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/05 16:14:09 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ int	give_birth(t_philo_d *data)
 {
 	int	pid;
 	int	index;
-	int	middle;
 
 	index = 0;
-	middle = data->num_phil / 2;
 	while (index < data->num_phil)
 	{
 		pid = fork();
@@ -30,8 +28,6 @@ int	give_birth(t_philo_d *data)
 			return (EXIT_FAILURE);
 		if (pid == 0)
 		{
-			if (index > middle)
-				usleep(REF_RATE * 2);
 			life_cycle(data, index);
 			clean_child(data, EXIT_SUCCESS);
 			exit(EXIT_SUCCESS);
