@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 18:04:27 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/04 18:48:20 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/05 17:06:47 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ static int	kill_philo(t_philo_d *data, int index_dead)
 
 void	message(t_state new_state, t_guy *philo)
 {
-
 	pthread_mutex_lock(philo->state_m);
 	if (philo->state == DEAD)
 	{
