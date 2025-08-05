@@ -61,19 +61,22 @@ typedef struct s_one_philo
 	pthread_mutex_t	*right_m;
 	pthread_mutex_t	*state_m;
 	pthread_mutex_t	*write_m;
+	pthread_mutex_t	*queue_m;
 	bool			*fork_l;
 	bool			*fork_r;
+	bool			*all_alive;
 }				t_guy;
 
 typedef struct s_philo_data
 {
 	int				num_phil;
-	int				all_alive;
+	bool			all_alive;
 	bool			*forks;
 	pthread_t		*threads;
 	pthread_mutex_t	*mutex_fork;
 	pthread_mutex_t	*mutex_state;
 	pthread_mutex_t	mutex_write;
+	pthread_mutex_t	mutex_queue;
 	t_guy			*philos;
 	t_base			life;
 	time_t			start;

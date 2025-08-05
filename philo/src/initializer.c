@@ -12,7 +12,8 @@
 
 #include "../include/philo.h"
 
-void	initialize_philo(t_philo_d *data, int ind);
+static void	initialize_philo(t_philo_d *data, int ind);
+static void	mix_forks(t_philo_d *data);
 
 int	read_values(t_philo_d *data, int argc, char **argv)
 {
@@ -38,7 +39,7 @@ int	initialize_metadata(t_philo_d *data)
 	int	index;
 
 	index = -1;
-	data->all_alive = 1;
+	data->all_alive = true;
 	data->threads = NULL;
 	data->philos = NULL;
 	data->forks = NULL;
@@ -58,10 +59,11 @@ int	initialize_metadata(t_philo_d *data)
 		initialize_philo(data, index);
 	(data->philos[data->num_phil - 1]).right_m = &(data->mutex_fork[0]);
 	(data->philos[data->num_phil - 1]).fork_r = &(data->forks[0]);
+	mix_forks(data);
 	return (0);
 }
 
-void	initialize_philo(t_philo_d *data, int ind)
+static void	initialize_philo(t_philo_d *data, int ind)
 {
 	data->forks[ind] = true;
 	(data->philos[ind]).state_m = &(data->mutex_state[ind]);
@@ -79,19 +81,21 @@ void	initialize_philo(t_philo_d *data, int ind)
 	(data->philos[ind]).index = ind;
 	(data->philos[ind]).life = &(data->life);
 	(data->philos[ind]).write_m = &(data->mutex_write);
+	(data->philos[ind]).queue_m = &(data->mutex_queue);
+	(data->philos[ind]).all_alive = &(data->all_alive);
 }
 
 void	initialize_threads(t_philo_d *data)
 {
 	int	index;
 
-	index = 0;
+	index = -1;
 	pthread_mutex_init(&(data->mutex_write), NULL);
-	while (index < data->num_phil)
+	pthread_mutex_init(&(data->mutex_queue), NULL);
+	while (++index < data->num_phil)
 	{
 		pthread_mutex_init(&(data->mutex_fork[index]), NULL);
 		pthread_mutex_init(&(data->mutex_state[index]), NULL);
-		index++;
 	}
 	index = 0;
 	while (index < data->num_phil)
@@ -106,6 +110,25 @@ void	initialize_threads(t_philo_d *data)
 	{
 		pthread_create(&(data->threads[index]), NULL, life_cycle,
 			(void *)&(data->philos[index]));
+		index += 2;
+	}
+}
+
+static void	mix_forks(t_philo_d *data)
+{
+	pthread_mutex_t	*mutex_temp;
+	int				index;
+	bool			*fork_temp;
+
+	index = 0;
+	while (index < data->num_phil)
+	{
+		mutex_temp = data->philos[index].left_m;
+		data->philos[index].left_m = data->philos[index].right_m;
+		data->philos[index].right_m = mutex_temp;
+		fork_temp = data->philos[index].fork_r;
+		data->philos[index].fork_r = data->philos[index].fork_l;
+		data->philos[index].fork_l = fork_temp;
 		index += 2;
 	}
 }

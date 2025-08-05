@@ -81,24 +81,16 @@ static void	update_state(t_guy *philo)
 
 static void	grab_forks(t_guy *philo)
 {
-	pthread_mutex_t	*left;
-	pthread_mutex_t	*right;
-
-	left = philo->left_m;
-	right = philo->right_m;
-	if ((right > left) && philo->index % 2 == 0)
-	{
-		left = philo->right_m;
-		right = philo->left_m;
-	}
-	if (left != right)
-	{
-		pthread_mutex_lock(right);
-		message(FORK, philo);
-		*(philo->fork_r) = false;
-	}
-	pthread_mutex_lock(left);
+	pthread_mutex_lock(philo->queue_m);
+	pthread_mutex_lock(philo->left_m);
 	if (*(philo->fork_l) == true)
 		message(FORK, philo);
 	*(philo->fork_l) = false;
+	if (philo->left_m != philo->right_m)
+	{
+		pthread_mutex_lock(philo->right_m);
+		message(FORK, philo);
+		*(philo->fork_r) = false;
+	}
+	pthread_mutex_unlock(philo->queue_m);
 }

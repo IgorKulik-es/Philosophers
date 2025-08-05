@@ -47,6 +47,7 @@ void	join_destroy(t_philo_d *data)
 		index++;
 	}
 	pthread_mutex_destroy(&(data->mutex_write));
+	pthread_mutex_destroy(&(data->mutex_queue));
 }
 
 int	print_error(char *error)

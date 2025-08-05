@@ -71,7 +71,6 @@ static int	kill_philo(t_philo_d *data, int index_dead)
 
 	index_others = -1;
 	message(DEAD, &(data->philos[index_dead]));
-	data->all_alive = 0;
 	while (++index_others < data->num_phil)
 	{
 		pthread_mutex_lock(&(data->mutex_state[index_others]));
@@ -100,6 +99,8 @@ static void	print_message(t_state new_state, t_guy *philo)
 	time_t	curr_time;
 
 	curr_time = c_time() - philo->start;
+	if (philo->all_alive == false)
+		return ;
 	if (new_state == FORK)
 		printf(C_CYN "%ld %d has taken a fork\n" C_RESET,
 			curr_time, philo->index + 1);
@@ -112,7 +113,10 @@ static void	print_message(t_state new_state, t_guy *philo)
 		printf(C_MAG "%ld %d is thinking\n" C_RESET,
 			curr_time, philo->index + 1);
 	if (new_state == DEAD)
+	{
 		printf(C_RED "%ld %d died\n" C_RESET, curr_time, philo->index + 1);
+		philo->all_alive = false;
+	}
 	if (new_state != FORK)
 		philo->state = new_state;
 }
