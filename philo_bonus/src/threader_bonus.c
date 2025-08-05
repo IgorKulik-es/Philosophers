@@ -19,8 +19,10 @@ int	give_birth(t_philo_d *data)
 {
 	int	pid;
 	int	index;
+	int	middle;
 
 	index = 0;
+	middle = data->num_phil / 2;
 	while (index < data->num_phil)
 	{
 		pid = fork();
@@ -28,6 +30,8 @@ int	give_birth(t_philo_d *data)
 			return (EXIT_FAILURE);
 		if (pid == 0)
 		{
+			if (index > middle)
+				usleep(REF_RATE * 2);
 			life_cycle(data, index);
 			clean_child(data, EXIT_SUCCESS);
 			exit(EXIT_SUCCESS);
