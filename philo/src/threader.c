@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/06 15:49:20 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/06 17:48:53 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	*life_cycle(void *input)
 			pthread_mutex_unlock(philo->state_m);
 			message(SLEEP, philo);
 			usleep(philo->life->sleep * MILLISEC);
+			usleep(SHORT_NAP);
 		}
 		else
 			pthread_mutex_unlock(philo->state_m);
@@ -81,13 +82,7 @@ static void	update_state(t_guy *philo)
 
 static void	grab_forks(t_guy *philo)
 {
-	pthread_mutex_t	*mutex_temp;
-	bool			*fork_temp;
-
-/* 	pthread_mutex_lock(philo->queue_m);
-	pthread_mutex_lock(philo->write_m);
-	printf("%d is queing\n", philo->index + 1);
-	pthread_mutex_unlock(philo->write_m); */
+	pthread_mutex_lock(philo->queue_m);
 	if (philo->left_m != philo->right_m)
 	{
 		pthread_mutex_lock(philo->right_m);
@@ -98,11 +93,5 @@ static void	grab_forks(t_guy *philo)
 	if (*(philo->fork_l) == true)
 		message(FORK, philo);
 	*(philo->fork_l) = false;
-/* 	mutex_temp = philo->left_m;
-	philo->left_m = philo->right_m;
-	philo->right_m = mutex_temp;
-	fork_temp = philo->fork_r;
-	philo->fork_r = philo->fork_l;
-	philo->fork_l = fork_temp;
-	pthread_mutex_unlock(philo->queue_m); */
+	pthread_mutex_unlock(philo->queue_m);
 }

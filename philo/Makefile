@@ -9,8 +9,8 @@ SRCS = $(addprefix $(SRCSDIR)/, $(SRC))
 
 OBJS = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
 
-CFLAGS = -Wall -Wextra -Werror -g 
-MFLAGS = -lpthread 
+CFLAGS = -Wall -Wextra -Werror -g
+MFLAGS = -lpthread
 RM = rm -f
 
 all: $(NAME)

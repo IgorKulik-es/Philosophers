@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 11:34:19 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/05 19:28:17 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/06 17:40:06 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <stdbool.h>
 # define MILLISEC 1000
 # define REF_RATE 100
+# define SHORT_NAP 400
 # define C_RED "\x1B[31m"
 # define C_GRN "\x1B[32m"
 # define C_YEL "\x1B[33m"
