@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:13:22 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/06 15:49:20 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/06 16:23:12 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ static void	try_to_eat(t_guy *philo)
 		pthread_mutex_unlock(philo->state_m);
 	if (philo->left_m != philo->right_m)
 	{
+		pthread_mutex_lock(philo->left_m);
+		pthread_mutex_lock(philo->right_m);
 		*(philo->fork_l) = true;
 		*(philo->fork_r) = true;
+		pthread_mutex_unlock(philo->left_m);
 		pthread_mutex_unlock(philo->right_m);
 	}
-	pthread_mutex_unlock(philo->left_m);
 }
 
 static void	update_state(t_guy *philo)
@@ -81,14 +83,34 @@ static void	update_state(t_guy *philo)
 
 static void	grab_forks(t_guy *philo)
 {
-	pthread_mutex_t	*mutex_temp;
-	bool			*fork_temp;
+	bool	status;
 
-/* 	pthread_mutex_lock(philo->queue_m);
-	pthread_mutex_lock(philo->write_m);
-	printf("%d is queing\n", philo->index + 1);
-	pthread_mutex_unlock(philo->write_m); */
-	if (philo->left_m != philo->right_m)
+	//usleep(c_time() - philo->die_t);
+	//pthread_mutex_lock(philo->queue_m);
+	status = true;
+	while (status)
+	{
+		pthread_mutex_lock(philo->left_m);
+		if (*(philo->fork_l))
+		{
+			pthread_mutex_lock(philo->right_m);
+			if (*(philo->fork_r))
+			{
+				message(FORK, philo);
+				message(FORK, philo);
+				*(philo->fork_l) = false;
+				*(philo->fork_r) = false;
+				status = false;
+			}
+			pthread_mutex_unlock(philo->right_m);
+		}
+		pthread_mutex_unlock(philo->left_m);
+		usleep(REF_RATE);
+	}
+	//pthread_mutex_lock(philo->queue_m);
+}
+
+/* 	if (philo->left_m != philo->right_m)
 	{
 		pthread_mutex_lock(philo->right_m);
 		message(FORK, philo);
@@ -97,12 +119,4 @@ static void	grab_forks(t_guy *philo)
 	pthread_mutex_lock(philo->left_m);
 	if (*(philo->fork_l) == true)
 		message(FORK, philo);
-	*(philo->fork_l) = false;
-/* 	mutex_temp = philo->left_m;
-	philo->left_m = philo->right_m;
-	philo->right_m = mutex_temp;
-	fork_temp = philo->fork_r;
-	philo->fork_r = philo->fork_l;
-	philo->fork_l = fork_temp;
-	pthread_mutex_unlock(philo->queue_m); */
-}
+	*(philo->fork_l) = false; */

@@ -6,7 +6,7 @@
 /*   By: ikulik <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 13:47:48 by ikulik            #+#    #+#             */
-/*   Updated: 2025/08/06 15:49:28 by ikulik           ###   ########.fr       */
+/*   Updated: 2025/08/06 16:30:01 by ikulik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ static void	initialize_philo(t_philo_d *data, int ind)
 		(data->philos[ind]).right_m = &(data->mutex_fork[ind + 1]);
 	if (ind < data->num_phil - 1)
 		(data->philos[ind]).fork_r = &(data->forks[ind + 1]);
+	data->forks[ind] = true;
 	(data->philos[ind]).state = SLEEP;
 	(data->philos[ind]).meals_left = data->life.food;
 	(data->philos[ind]).index = ind;
@@ -120,7 +121,7 @@ static void	mix_forks(t_philo_d *data)
 	int				index;
 	bool			*fork_temp;
 
-	index = 0;
+	index = data->num_phil;
 	while (index < data->num_phil)
 	{
 		mutex_temp = data->philos[index].left_m;
